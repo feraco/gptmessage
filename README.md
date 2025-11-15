@@ -72,3 +72,45 @@ class HuggingFaceConfiguration: ObservableObject {
     
 }
 ```
+
+## Audio Orchestrator
+
+The app now includes a comprehensive audio orchestrator system for managing voice interactions. This system coordinates Automatic Speech Recognition (ASR) and Text-to-Speech (TTS) to enable smooth conversation flow without interference between listening and playback.
+
+### Features
+
+- **State Management**: Robust state machine with idle, listening, processing, and playing states
+- **Thread-Safe**: Uses Swift actors for safe concurrent access
+- **Real-Time**: Designed for low-latency voice interactions
+- **Resource Efficient**: Automatically enters idle state to conserve resources
+- **Easy Integration**: Simple API through `AudioManager.shared`
+
+### Quick Start
+
+```swift
+import ChatGPT
+
+// Request authorization
+AudioManager.shared.requestAuthorization { authorized in
+    if authorized {
+        Task {
+            // Start listening
+            try await AudioManager.shared.startListening()
+        }
+    }
+}
+
+// Subscribe to recognized text
+AudioManager.shared.recognizedTextPublisher
+    .sink { text, isFinal in
+        print("Recognized: \(text)")
+    }
+    .store(in: &cancellables)
+
+// Speak a response
+Task {
+    try await AudioManager.shared.speak("Hello, how can I help you?")
+}
+```
+
+For detailed documentation, see [AUDIO_ORCHESTRATOR.md](AUDIO_ORCHESTRATOR.md).
