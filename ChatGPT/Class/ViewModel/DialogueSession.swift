@@ -226,6 +226,14 @@ class DialogueSession: ObservableObject, Identifiable, Equatable, Hashable, Coda
             }
             lastConversationData?.sync(with: conversation)
             isStreaming = false
+            
+            // TTS integration - speak the response
+            if TTSConfiguration.shared.isEnabled && TTSConfiguration.shared.autoPlay {
+                Task {
+                    await speakResponse(conversation.reply ?? "")
+                }
+            }
+            
             createSuggestions(scroll: scroll)
         } catch {
 #if os(iOS)
@@ -277,6 +285,46 @@ class DialogueSession: ObservableObject, Identifiable, Equatable, Hashable, Coda
 #endif
             } catch let error {
                 print(error)
+            }
+        }
+    }
+    
+    // MARK: - TTS and Avatar Integration
+    
+    @MainActor
+    private func speakResponse(_ text: String) async {
+        guard !text.isEmpty else { return }
+        
+        do {
+            // Detect emotion if enabled
+            if AvatarConfiguration.shared.isEnabled && AvatarConfiguration.shared.autoDetectEmotion {
+                let emotion = AvatarAnimationService.shared.detectEmotionFromText(text)
+                AvatarAnimationService.shared.setEmotion(emotion)
+            }
+            
+            // Start avatar speaking animation
+            if AvatarConfiguration.shared.isEnabled {
+                AvatarAnimationService.shared.startSpeakingAnimation(text: text)
+            }
+            
+            // Generate and play speech
+            let provider = TTSConfiguration.shared.provider
+            let apiKey = provider.requiresAPIKey ? AppConfiguration.shared.key : ""
+            
+            _ = try await TTSService.shared.speak(
+                text: text,
+                provider: provider,
+                apiKey: apiKey
+            )
+            
+            // Stop avatar animation
+            if AvatarConfiguration.shared.isEnabled {
+                AvatarAnimationService.shared.stopSpeakingAnimation()
+            }
+        } catch {
+            print("TTS error: \(error.localizedDescription)")
+            if AvatarConfiguration.shared.isEnabled {
+                AvatarAnimationService.shared.stopSpeakingAnimation()
             }
         }
     }

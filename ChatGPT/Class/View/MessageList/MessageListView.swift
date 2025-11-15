@@ -21,6 +21,8 @@ struct MessageListView: View {
     
     @State var isShowLoadingToast = false
     
+    @State var showFullScreenAvatar = false
+    
     var body: some View {
         contentView
             .alert(
@@ -75,6 +77,15 @@ struct MessageListView: View {
                         Image(systemName: "trash")
                     }
                 }
+                ToolbarItem(placement: .automatic) {
+                    if AvatarConfiguration.shared.isEnabled {
+                        Button {
+                            showFullScreenAvatar = true
+                        } label: {
+                            Image(systemName: "robot.fill")
+                        }
+                    }
+                }
             }
 #else
             .navigationTitle(session.configuration.model.rawValue)
@@ -87,8 +98,20 @@ struct MessageListView: View {
                         Image(systemName: "trash")
                     }
                 }
+                ToolbarItem(placement: .automatic) {
+                    if AvatarConfiguration.shared.isEnabled {
+                        Button {
+                            showFullScreenAvatar = true
+                        } label: {
+                            Image(systemName: "robot.fill")
+                        }
+                    }
+                }
             }
 #endif
+            .sheet(isPresented: $showFullScreenAvatar) {
+                FullScreenAvatarView()
+            }
     }
     
     @State var scrollViewHeight: CGFloat?

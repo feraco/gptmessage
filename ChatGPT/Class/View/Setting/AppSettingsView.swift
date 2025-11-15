@@ -123,6 +123,16 @@ struct AppSettingsView: View {
                     }
                 }
             }
+            Section("Robotics") {
+                NavigationLink {
+                    RoboticsSettingsView()
+                } label: {
+                    HStack {
+                        Image(systemName: "robot.fill")
+                        Text("ASR, TTS & Avatar")
+                    }
+                }
+            }
         }
         .onAppear() {
             self.selectedModel = configuration.model
