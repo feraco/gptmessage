@@ -6,6 +6,7 @@
 //
 
 import Foundation
+#if os(iOS)
 import UIKit
 
 /// Manages vision-based interactions and integrates with conversation flow
@@ -177,3 +178,4 @@ class VisionInteractionManager: ObservableObject {
         return nil
     }
 }
+#endif

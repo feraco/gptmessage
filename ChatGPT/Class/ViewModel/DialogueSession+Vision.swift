@@ -6,7 +6,11 @@
 //
 
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 extension DialogueSession {
     
@@ -45,6 +49,7 @@ extension DialogueSession {
 #endif
     }
     
+#if os(iOS)
     /// Processes an image with vision and generates response
     @MainActor
     func processImageWithVision(_ image: UIImage, prompt: String) async -> String {
@@ -67,6 +72,7 @@ extension DialogueSession {
             return "I encountered an error processing the image: \(error.localizedDescription)"
         }
     }
+#endif
     
     /// Appends a vision-generated response to conversation
     @MainActor

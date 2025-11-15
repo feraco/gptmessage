@@ -26,21 +26,33 @@ class VisionConfiguration: ObservableObject {
     /// Checks if user has given consent for face recognition
     var hasFaceRecognitionConsent: Bool {
         get {
+#if os(iOS)
             FaceDataManager.shared.hasUserConsent
+#else
+            false
+#endif
         }
         set {
+#if os(iOS)
             FaceDataManager.shared.hasUserConsent = newValue
+#endif
         }
     }
     
     /// Number of saved faces
     var savedFaceCount: Int {
+#if os(iOS)
         FaceDataManager.shared.savedFaceCount
+#else
+        0
+#endif
     }
     
     /// Clears all saved face data
     func clearAllFaceData() {
+#if os(iOS)
         FaceDataManager.shared.deleteAllFaceData()
         FaceDataManager.shared.hasUserConsent = false
+#endif
     }
 }

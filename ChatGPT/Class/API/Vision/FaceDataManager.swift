@@ -6,6 +6,7 @@
 //
 
 import Foundation
+#if os(iOS)
 import UIKit
 
 /// Manages storage and retrieval of facial recognition data with user consent
@@ -172,3 +173,4 @@ enum FaceDataError: LocalizedError {
         }
     }
 }
+#endif

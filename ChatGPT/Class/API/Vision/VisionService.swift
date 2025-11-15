@@ -8,6 +8,7 @@
 import Foundation
 import Vision
 import CoreImage
+#if os(iOS)
 import UIKit
 
 /// Service for performing Vision framework operations like face detection, object recognition, and scene analysis
@@ -346,3 +347,4 @@ extension CGRect: Codable {
         self.init(x: x, y: y, width: width, height: height)
     }
 }
+#endif

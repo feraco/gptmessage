@@ -133,6 +133,7 @@ class DialogueSession: ObservableObject, Identifiable, Equatable, Hashable, Coda
     
     @MainActor
     func send(scroll: ((UnitPoint) -> Void)? = nil) async {
+#if os(iOS)
         // Check if we have both text and image data - this might be a vision query
         if !input.isEmpty, let imageData = inputData, let image = UIImage(data: imageData) {
             let visionManager = VisionInteractionManager.shared
@@ -165,6 +166,7 @@ class DialogueSession: ObservableObject, Identifiable, Equatable, Hashable, Coda
                 return
             }
         }
+#endif
         
         if input.isEmpty, let inputData = inputData {
             sendingData = inputData
