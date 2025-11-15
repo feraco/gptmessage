@@ -96,7 +96,10 @@ struct RoboticsSettingsView: View {
                 
                 if avatarConfig.isEnabled {
                     Toggle("Auto-detect Emotion", isOn: $avatarConfig.autoDetectEmotion)
-                        .help("Automatically detect emotion from response text")
+                    
+                    Text("Automatically detect emotion from response text")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                     
                     Toggle("Show Subtitles", isOn: $avatarConfig.showSubtitles)
                     
