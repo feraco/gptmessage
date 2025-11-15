@@ -21,6 +21,9 @@ struct LeadingComposerView: View {
     @State var imageSelection: PhotosPickerItem? = nil
     
     @Binding var isLoading: Bool
+    
+    @ObservedObject var asrConfig = ASRConfiguration.shared
+    @State var isRecording = false
 
     
     private var height: CGFloat {
@@ -33,6 +36,25 @@ struct LeadingComposerView: View {
     
     var body: some View {
         HStack(spacing: 16) {
+            // Microphone button for voice input
+            if asrConfig.isEnabled {
+                Button {
+                    Task {
+                        if isRecording {
+                            await stopRecording()
+                        } else {
+                            await startRecording()
+                        }
+                    }
+                } label: {
+                    Image(systemName: isRecording ? "stop.circle.fill" : "mic.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: height)
+                        .foregroundColor(isRecording ? .red : .gray)
+                }
+            }
+            
             Button {
                 showPhotoPicker = true
             } label: {
@@ -90,6 +112,56 @@ struct LeadingComposerView: View {
             }
         }
         
+    }
+    
+    // MARK: - ASR Functions
+    
+    private func startRecording() async {
+        do {
+            isRecording = true
+            _ = try await ASRService.shared.startRecording()
+        } catch {
+            isRecording = false
+            print("Recording error: \(error)")
+        }
+    }
+    
+    private func stopRecording() async {
+        guard let url = ASRService.shared.stopRecording() else {
+            isRecording = false
+            return
+        }
+        
+        isRecording = false
+        isLoading = true
+        
+        do {
+            let provider = asrConfig.provider
+            let apiKey: String
+            
+            switch provider {
+            case .whisper:
+                apiKey = AppConfiguration.shared.key
+            case .google:
+                apiKey = asrConfig.googleAPIKey
+            case .azure:
+                apiKey = asrConfig.azureAPIKey
+            }
+            
+            let transcription = try await ASRService.shared.transcribe(
+                audioURL: url,
+                provider: provider,
+                apiKey: apiKey
+            )
+            
+            DispatchQueue.main.async {
+                session.input = transcription
+                isLoading = false
+            }
+        } catch {
+            isLoading = false
+            print("Transcription error: \(error)")
+        }
     }
     
 }
