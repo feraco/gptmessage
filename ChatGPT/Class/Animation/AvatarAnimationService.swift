@@ -250,13 +250,15 @@ class AvatarAnimationService: ObservableObject {
 class AvatarConfiguration: ObservableObject {
     static let shared = AvatarConfiguration()
     
-    @Published var isEnabled: Bool = false
-    @Published var autoDetectEmotion: Bool = true
-    @Published var showSubtitles: Bool = true
-    @Published var animationSpeed: Double = 1.0
+    @AppStorage("avatar.isEnabled") var isEnabled: Bool = false
+    @AppStorage("avatar.autoDetectEmotion") var autoDetectEmotion: Bool = true
+    @AppStorage("avatar.showSubtitles") var showSubtitles: Bool = true
+    @AppStorage("avatar.animationSpeed") var animationSpeed: Double = 1.0
+    @AppStorage("avatar.displayMode") var displayMode: AvatarDisplayMode = .fullFace
+    
+    // Note: Color cannot be stored directly in AppStorage, using default values
     @Published var eyeColor: Color = .blue
     @Published var faceColor: Color = .white
-    @Published var displayMode: AvatarDisplayMode = .fullFace
     
     private init() {}
 }

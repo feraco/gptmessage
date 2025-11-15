@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import SwiftUI
 
 /// ASR Provider types
 enum ASRProvider: String, CaseIterable, Codable {
@@ -263,11 +264,11 @@ enum ASRError: LocalizedError {
 class ASRConfiguration: ObservableObject {
     static let shared = ASRConfiguration()
     
-    @Published var provider: ASRProvider = .whisper
-    @Published var googleAPIKey: String = ""
-    @Published var azureAPIKey: String = ""
-    @Published var azureRegion: String = "eastus"
-    @Published var isEnabled: Bool = false
+    @AppStorage("asr.provider") var provider: ASRProvider = .whisper
+    @AppStorage("asr.googleAPIKey") var googleAPIKey: String = ""
+    @AppStorage("asr.azureAPIKey") var azureAPIKey: String = ""
+    @AppStorage("asr.azureRegion") var azureRegion: String = "eastus"
+    @AppStorage("asr.isEnabled") var isEnabled: Bool = false
     
     private init() {}
 }

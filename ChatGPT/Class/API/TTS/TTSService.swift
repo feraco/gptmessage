@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import SwiftUI
 
 /// TTS Provider types
 enum TTSProvider: String, CaseIterable, Codable {
@@ -288,15 +289,15 @@ enum TTSError: LocalizedError {
 class TTSConfiguration: ObservableObject {
     static let shared = TTSConfiguration()
     
-    @Published var provider: TTSProvider = .system
-    @Published var isEnabled: Bool = false
-    @Published var autoPlay: Bool = true
-    @Published var speechRate: Double = 0.5
-    @Published var pitch: Double = 1.0
-    @Published var volume: Double = 1.0
-    @Published var language: String = "en-US"
-    @Published var openAIVoice: OpenAIVoice = .alloy
-    @Published var azureRegion: String = "eastus"
+    @AppStorage("tts.provider") var provider: TTSProvider = .system
+    @AppStorage("tts.isEnabled") var isEnabled: Bool = false
+    @AppStorage("tts.autoPlay") var autoPlay: Bool = true
+    @AppStorage("tts.speechRate") var speechRate: Double = 0.5
+    @AppStorage("tts.pitch") var pitch: Double = 1.0
+    @AppStorage("tts.volume") var volume: Double = 1.0
+    @AppStorage("tts.language") var language: String = "en-US"
+    @AppStorage("tts.openAIVoice") var openAIVoice: OpenAIVoice = .alloy
+    @AppStorage("tts.azureRegion") var azureRegion: String = "eastus"
     
     private init() {}
 }
