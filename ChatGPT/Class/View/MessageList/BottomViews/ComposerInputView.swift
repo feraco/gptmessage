@@ -16,6 +16,11 @@ struct ComposerInputView: View {
     
     var send: (String) -> Void
     
+#if os(iOS)
+    @StateObject private var cameraService = CameraService()
+    @State private var showCamera = false
+#endif
+    
     private var size: CGFloat {
 #if os(macOS)
         24
@@ -141,9 +146,9 @@ struct ComposerInputView: View {
         } else {
 #if os(iOS)
             Button {
-                
+                showCamera = true
             } label: {
-                Image(systemName: "mic")
+                Image(systemName: "camera")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 18, height: 18)
@@ -151,6 +156,18 @@ struct ComposerInputView: View {
                     .opacity(0.7)
             }
             .offset(x:-4, y: -4)
+            .sheet(isPresented: $showCamera) {
+                CameraView(image: $cameraService.capturedImage, isPresented: $showCamera)
+            }
+            .onChange(of: cameraService.capturedImage) { image in
+                if let image = image {
+                    // Convert to Data and set as input
+                    if let imageData = image.jpegData(compressionQuality: 0.8) {
+                        session.inputData = imageData
+                    }
+                    cameraService.capturedImage = nil
+                }
+            }
 #endif
         }
     }

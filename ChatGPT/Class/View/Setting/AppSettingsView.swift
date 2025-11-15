@@ -105,6 +105,19 @@ struct AppSettingsView: View {
                     }
                 }
             }
+            Section("Vision") {
+#if os(iOS)
+                NavigationLink {
+                    VisionSettingsView()
+                } label: {
+                    HStack {
+                        Image(systemName: "camera.fill")
+                            .foregroundColor(.blue)
+                        Text("Vision Features")
+                    }
+                }
+#endif
+            }
             Section("Prompt") {
                 NavigationLink {
                     PromptsListView()

@@ -16,6 +16,18 @@ And macOS:
 ### Chat Completion
 
 Chat Completion is driven by OpenAI's chat language models, including gpt-3.5-turbo and gpt-3.5-turbo-0301.
+
+### Vision Features (iOS)
+
+**NEW**: Native iOS Vision API integration enables camera-based interactions:
+- **Face Recognition**: Introduce yourself and the app will remember and address you by name
+- **Scene Analysis**: Ask "What do you see?" for detailed image descriptions
+- **Object Recognition**: Identify objects, text, and activities in captured images
+- **On-Demand Vision**: Voice-activated triggers like "Who is in front of me?" or "Describe what you see"
+- **Privacy-First**: All facial data stored locally with user consent required
+
+See [VISION_FEATURES.md](VISION_FEATURES.md) for detailed documentation.
+
 ### Image Generation
 
 Image Generation uses OpenAI's image generation API(DALL·E) and HuggingFace's Inference API to create images.

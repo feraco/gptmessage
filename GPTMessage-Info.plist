@@ -4,5 +4,11 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to your camera to capture images for face detection and scene analysis during conversations.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to analyze images for conversational context.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app uses face detection to remember users and provide personalized responses.</string>
 </dict>
 </plist>
