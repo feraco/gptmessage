@@ -133,6 +133,39 @@ class DialogueSession: ObservableObject, Identifiable, Equatable, Hashable, Coda
     
     @MainActor
     func send(scroll: ((UnitPoint) -> Void)? = nil) async {
+        // Check if we have both text and image data - this might be a vision query
+        if !input.isEmpty, let imageData = inputData, let image = UIImage(data: imageData) {
+            let visionManager = VisionInteractionManager.shared
+            let visionConfig = VisionConfiguration.shared
+            
+            // Check if vision is enabled and this is a vision query
+            if visionConfig.isVisionEnabled && visionManager.shouldTriggerVision(for: input) {
+                let visionResponse = await processImageWithVision(image, prompt: input)
+                
+                // Create a conversation with both the query and vision response
+                var conversation = Conversation(
+                    isReplying: false,
+                    isLast: true,
+                    input: input,
+                    inputData: imageData,
+                    reply: visionResponse,
+                    errorDesc: nil)
+                
+                if conversations.count > 0 {
+                    conversations[conversations.endIndex-1].isLast = false
+                }
+                
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    appendConversation(conversation)
+                    scroll?(.bottom)
+                }
+                
+                input = ""
+                self.inputData = nil
+                return
+            }
+        }
+        
         if input.isEmpty, let inputData = inputData {
             sendingData = inputData
             self.inputData = nil
